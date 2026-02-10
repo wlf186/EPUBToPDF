@@ -273,11 +273,28 @@ def epub_to_pdf(epub_path, pdf_path=None):
 
 def main():
     parser = argparse.ArgumentParser(description='Convert EPUB to PDF')
-    parser.add_argument('epub_file', help='Path to EPUB file')
+    parser.add_argument('epub_file', nargs='?', help='Path to EPUB file (default: all .epub files in current directory)')
     parser.add_argument('-o', '--output', help='Output PDF path (default: same name as EPUB)')
     args = parser.parse_args()
 
-    epub_to_pdf(args.epub_file, args.output)
+    # If no epub_file specified, convert all epub files in current directory
+    if args.epub_file is None:
+        import glob
+        epub_files = glob.glob('*.epub')
+        if not epub_files:
+            print("No EPUB files found in current directory.")
+            return
+        print(f"Found {len(epub_files)} EPUB file(s) in current directory.\n")
+        success_count = 0
+        for epub_file in epub_files:
+            print("=" * 60)
+            if epub_to_pdf(epub_file, args.output):
+                success_count += 1
+            print()
+        print("=" * 60)
+        print(f"Conversion complete: {success_count}/{len(epub_files)} succeeded")
+    else:
+        epub_to_pdf(args.epub_file, args.output)
 
 
 if __name__ == '__main__':
