@@ -272,29 +272,53 @@ def epub_to_pdf(epub_path, pdf_path=None):
 
 
 def main():
+    import glob
+
     parser = argparse.ArgumentParser(description='Convert EPUB to PDF')
-    parser.add_argument('epub_file', nargs='?', help='Path to EPUB file (default: all .epub files in current directory)')
-    parser.add_argument('-o', '--output', help='Output PDF path (default: same name as EPUB)')
+    parser.add_argument('epub_file', nargs='?', help='Path to EPUB file (default: all .epub files in input/ directory)')
+    parser.add_argument('-o', '--output', help='Output PDF path (default: output/ directory with same name)')
     args = parser.parse_args()
 
-    # If no epub_file specified, convert all epub files in current directory
+    # If no epub_file specified, convert all epub files in input/ directory
     if args.epub_file is None:
-        import glob
-        epub_files = glob.glob('*.epub')
+        input_dir = 'input'
+        output_dir = 'output'
+
+        # Create output directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Find all epub files in input directory
+        pattern = os.path.join(input_dir, '*.epub')
+        epub_files = glob.glob(pattern)
+
         if not epub_files:
-            print("No EPUB files found in current directory.")
+            print(f"No EPUB files found in '{input_dir}/' directory.")
             return
-        print(f"Found {len(epub_files)} EPUB file(s) in current directory.\n")
+
+        print(f"Found {len(epub_files)} EPUB file(s) in '{input_dir}/' directory.")
+        print(f"Output will be saved to '{output_dir}/' directory.\n")
+
         success_count = 0
         for epub_file in epub_files:
             print("=" * 60)
-            if epub_to_pdf(epub_file, args.output):
+            # Generate output path in output directory
+            base_name = os.path.splitext(os.path.basename(epub_file))[0]
+            output_path = os.path.join(output_dir, base_name + '.pdf')
+            if epub_to_pdf(epub_file, output_path):
                 success_count += 1
             print()
         print("=" * 60)
         print(f"Conversion complete: {success_count}/{len(epub_files)} succeeded")
     else:
-        epub_to_pdf(args.epub_file, args.output)
+        # Single file mode - use specified output or default to input directory
+        if args.output:
+            output_path = args.output
+        else:
+            # If no output specified, place in output/ directory
+            base_name = os.path.splitext(os.path.basename(args.epub_file))[0]
+            os.makedirs('output', exist_ok=True)
+            output_path = os.path.join('output', base_name + '.pdf')
+        epub_to_pdf(args.epub_file, output_path)
 
 
 if __name__ == '__main__':
