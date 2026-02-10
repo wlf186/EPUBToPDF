@@ -28,21 +28,34 @@ cd EPUBToPDF
 pip install -r requirements.txt
 ```
 
-**Note for Linux users:** WeasyPrint requires some system packages. Install them first:
+**Platform-specific requirements:**
 
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install python3-dev python3-pip python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+**Windows:**
+WeasyPrint requires GTK+ runtime. Download and install from:
+- GTK3 runtime: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer
+- Or install via MSYS2: `pacman -S python python-pip mingw-w64-x86_64-cairo mingw-w64-x86_64-pango mingw-w64-x86_64-gdk-pixbuf2`
+
+Then install Python dependencies:
+```cmd
+pip install -r requirements.txt
 ```
 
-**Fedora:**
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get install python3-dev python3-pip python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+pip install -r requirements.txt
+```
+
+**Linux (Fedora):**
 ```bash
 sudo dnf install python3-devel cairo-devel pango-devel gdk-pixbuf2-devel
+pip install -r requirements.txt
 ```
 
 **macOS:**
 ```bash
 brew install cairo pango gdk-pixbuf libffi
+pip install -r requirements.txt
 ```
 
 ## Usage
