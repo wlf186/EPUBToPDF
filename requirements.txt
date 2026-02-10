@@ -1,0 +1,11 @@
+# EPUB to PDF Converter Requirements
+# Python 3.8+
+
+# EPUB file reading
+ebooklib>=0.20
+
+# PDF generation with CSS support
+weasyprint>=60
+
+# HTML parsing
+beautifulsoup4>=4.12
